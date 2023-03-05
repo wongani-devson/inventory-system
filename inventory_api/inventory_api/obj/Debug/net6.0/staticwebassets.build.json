@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "vngVxrJ0oanbDwFCwLsW5pVV++XGRCYBtdWHYtHW+qA=",
+  "Source": "inventory_api",
+  "BasePath": "_content/inventory_api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
