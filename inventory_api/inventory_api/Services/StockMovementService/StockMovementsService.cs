@@ -17,7 +17,24 @@ namespace inventory_api.Services.StockMovementService
 
         public async Task<IEnumerable<StockMovements>> GetStockMovements()
         {
-            return await _context.StockMovements.Include(s => s.Product).ToListAsync();
+            //return await _context.StockMovements.Include(s => s.Product).ToListAsync();
+            var stockMovements = await (
+
+                from sm in _context.StockMovements
+                join p in _context.Products on sm.ProductId equals p.ProductId
+                join ot in _context.OrderTypes on sm.OrderTypeId equals ot.OrderTypeId
+                select new StockMovements
+                {
+                    StockMovementsId = sm.StockMovementsId,
+                    Date = sm.Date,
+                    Quantity = sm.Quantity,
+                    OrderTypeId = sm.OrderTypeId,
+                    ProductId = sm.ProductId,
+                    OrderType = sm.OrderType,
+                    Product = sm.Product,
+                }).ToListAsync();
+
+            return stockMovements;
         }
 
         public async Task<StockMovements> GetStockMovement(int id)
@@ -35,12 +52,19 @@ namespace inventory_api.Services.StockMovementService
 
         public async Task<StockMovements> UpdateStockMovement(int id, StockMovements stockMovement)
         {
-            if (id != stockMovement.StockMovementsId)
+            var existingStoveMovement = await _context.StockMovements.FindAsync(id);
+
+            if (existingStoveMovement == null)
             {
                 throw new ArgumentException("Id mismatch");
             }
 
-            _context.Entry(stockMovement).State = EntityState.Modified;
+            existingStoveMovement.Date = stockMovement.Date;
+            existingStoveMovement.Quantity = stockMovement.Quantity;
+            existingStoveMovement.OrderTypeId = stockMovement.OrderTypeId;
+            existingStoveMovement.ProductId = stockMovement.ProductId;
+
+            _context.Entry(existingStoveMovement).State = EntityState.Modified;
 
             try
             {
@@ -58,7 +82,7 @@ namespace inventory_api.Services.StockMovementService
                 }
             }
 
-            return stockMovement;
+            return existingStoveMovement;
         }
 
         public async Task DeleteStockMovement(int id)

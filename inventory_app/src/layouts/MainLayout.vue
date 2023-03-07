@@ -4,7 +4,6 @@
       <q-toolbar>
         <q-btn
           flat
-          dense
           round
           icon="menu"
           aria-label="Menu"
@@ -16,14 +15,17 @@
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-list>
-        <q-item-label header> Essential Links </q-item-label>
-
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+      <q-list class="q-pa-sm" v-for="link in essentialLinks" :key="link.title">
+        <!-- <q-btn @click="$router.push(link.route)">
+          {{ link.title }}
+        </q-btn> -->
+        <q-item clickable @click="$router.push(link.route)">
+          <q-item-section>
+            <q-item-label class="text-weight-bold">{{
+              link.title
+            }}</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -39,12 +41,8 @@ import EssentialLink from "components/EssentialLink.vue";
 
 const linksList = [
   {
-    title: "inventory",
-    route: "/inventory",
-  },
-  {
     title: "products",
-    route: "/upload-products",
+    route: "/products",
   },
   {
     title: "categories",
@@ -58,13 +56,25 @@ const linksList = [
     title: "suppliers",
     route: "/suppliers",
   },
+  {
+    title: "orders",
+    route: "/orders",
+  },
+  {
+    title: "orders details",
+    route: "/order_details",
+  },
+  {
+    title: "stock movements",
+    route: "/stock_movements",
+  },
 ];
 
 export default defineComponent({
   name: "MainLayout",
 
   components: {
-    EssentialLink,
+    // EssentialLink,
   },
 
   setup() {

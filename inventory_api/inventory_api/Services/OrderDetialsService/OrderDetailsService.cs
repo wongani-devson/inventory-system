@@ -19,8 +19,21 @@ namespace inventory_api.Services.OrderDetials
 
         public async Task<IEnumerable<OrderDetails>> GetOrderDetails()
         {
-            return await _context.OrderDetails.Include(o => o.Product)
-                .Include(p => p.Order).ToListAsync();
+            //return await _context.OrderDetails.Include(o => o.Product)
+            //    .Include(p => p.Order).ToListAsync()
+            var OrderDetails = await (
+
+                from od in _context.OrderDetails
+                join p in _context.Products on od.ProductId equals p.ProductId
+                select new OrderDetails
+                {
+                    OrderDetailsId = od.OrderDetailsId,
+                    Quantity = od.Quantity,
+                    Product = p
+                }).ToListAsync();
+
+            return OrderDetails;
+
         }
 
         public async Task<OrderDetails> GetOrderDetail(int id)
@@ -38,12 +51,17 @@ namespace inventory_api.Services.OrderDetials
 
         public async Task<OrderDetails> UpdateOrderDetail(int id, OrderDetails OrderDetail)
         {
-            if (id != OrderDetail.OrderDetailsId)
+            var existingOrderDetails = await _context.OrderDetails.FindAsync(id);
+
+            if (existingOrderDetails == null)
             {
                 throw new ArgumentException("Id mismatch");
             }
 
-            _context.Entry(OrderDetail).State = EntityState.Modified;
+            existingOrderDetails.Quantity = OrderDetail.Quantity;
+            existingOrderDetails.ProductId = OrderDetail.ProductId;
+
+            _context.Entry(existingOrderDetails).State = EntityState.Modified;
 
             try
             {
@@ -61,7 +79,7 @@ namespace inventory_api.Services.OrderDetials
                 }
             }
 
-            return OrderDetail;
+            return existingOrderDetails;
         }
 
         public async Task DeleteOrderDetail(int id)

@@ -6,7 +6,7 @@ namespace inventory_api.Services.AuthService
     public interface IAuthService
     {
         Task<User> RegisterUser(UserRegister req);
-        Task<User> LoginUser(UserRegister req);
+        Task<User> LoginUser(LoginDTO req);
 
     }
 }

@@ -12,7 +12,11 @@ namespace inventory_api.Models
 
         [ForeignKey("CustomerId")]
         public  int CustomerId { get; set; }
-        public  Customer? Customer { get; set; }
+        public virtual Customer? Customer { get; set; }
+
+        [ForeignKey("OrderDetails")]
+        public int OrderDetailsId { get; set; }
+        public virtual OrderDetails? OrderDetails { get; set; }
 
     }
 }

@@ -45,7 +45,7 @@ namespace inventory_api.Services.AuthService
             return user;
         }
 
-        public async Task<User> LoginUser(UserRegister req)
+        public async Task<User> LoginUser(LoginDTO req)
         {
             var user = await _context.Users.FindAsync(req.Email);
 

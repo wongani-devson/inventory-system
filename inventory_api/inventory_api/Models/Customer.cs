@@ -10,7 +10,7 @@ namespace inventory_api.Models
         [Key]
         public int CustomerId { get; set; }
         public string? CustomerName { get; set; }
-        public string? ContactInformatin { get; set; }
+        public string? ContactInformation { get; set; }
         [Column(TypeName = "decimal(18,4)")]
         public decimal TotalSpend { get; set; }
 

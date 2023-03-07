@@ -13,11 +13,11 @@ namespace inventory_api.Models
 
         [ForeignKey("OrderType")]
         public int OrderTypeId { get; set; }
-        public OrderType OrderType { get; set; }
+        public OrderType? OrderType { get; set; }
 
         [ForeignKey("Product")]
         public int ProductId { get; set; }
-        public Product Product { get; set; }
+        public Product? Product { get; set; }
 
     }
 }

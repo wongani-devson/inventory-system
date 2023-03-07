@@ -36,12 +36,18 @@ namespace inventory_api.Services.CategoryService
 
         public async Task<Category> UpdateCategory(int id, Category category)
         {
-            if (id != category.CategoryId)
+            var existingCategory = await _context.Categories.FindAsync(id);
+
+            if (existingCategory == null)
             {
                 throw new ArgumentException("Id mismatch");
             }
 
-            _context.Entry(category).State = EntityState.Modified;
+            existingCategory.CategoryName = category.CategoryName;
+            existingCategory.CategoryDescription = category.CategoryDescription;
+
+
+            _context.Entry(existingCategory).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +65,7 @@ namespace inventory_api.Services.CategoryService
                 }
             }
 
-            return category;
+            return existingCategory;
         }
 
         public async Task DeleteCategory(int id)

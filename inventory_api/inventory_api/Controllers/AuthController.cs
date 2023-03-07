@@ -35,7 +35,7 @@ namespace inventory_api.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> RegisterUser(UserRegister req)
         {
-            var user = _authService.RegisterUser(req);
+            var user = await _authService.RegisterUser(req);
 
             if(user == null)
             {

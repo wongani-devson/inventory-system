@@ -11,6 +11,9 @@ const routes = [
         path: "/products",
         name: "products",
         component: () => import("pages/products/products.vue"),
+        // meta: {
+        //   requiresAuth: true,
+        // },
       },
       {
         path: "/create_product",
@@ -35,7 +38,7 @@ const routes = [
       {
         path: "/create_supplier",
         name: "create_supplier",
-        component: () => import("pages/suppliers/create_supplier.vue"),
+        component: () => import("pages/suppliers/create-supplier.vue"),
       },
       {
         path: "/customers",
@@ -46,6 +49,37 @@ const routes = [
         path: "/create_customer",
         name: "create_customer",
         component: () => import("pages/customers/create_customer.vue"),
+      },
+      {
+        path: "/create_order",
+        name: "create_order",
+        component: () => import("pages/orders/create-order.vue"),
+      },
+      {
+        path: "/orders",
+        name: "orders",
+        component: () => import("pages/orders/orders.vue"),
+      },
+      {
+        path: "/order_details",
+        name: "order_details",
+        component: () => import("pages/order-details/order-details.vue"),
+      },
+      {
+        path: "/create_order_detail",
+        name: "create_order_detail",
+        component: () => import("pages/order-details/create-order-detail.vue"),
+      },
+      {
+        path: "/create_stock_movement",
+        name: "create_stock_movement",
+        component: () =>
+          import("pages/stock-movements/create-stock-movement.vue"),
+      },
+      {
+        path: "/stock_movements",
+        name: "stock_movements",
+        component: () => import("pages/stock-movements/stock-movements.vue"),
       },
     ],
   },

@@ -11,8 +11,8 @@
 <script>
 export default {
   name: "PageIndex",
-  // mounted() {
-  //   this.$router.push("/sign-up");
-  // },
+  mounted() {
+    this.$router.push("/products");
+  },
 };
 </script>

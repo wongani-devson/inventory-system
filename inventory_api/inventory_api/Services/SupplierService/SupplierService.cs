@@ -37,12 +37,17 @@ namespace inventory_api.Services.SupplierService
 
         public async Task<Supplier> UpdateSupplier(int id, Supplier supplier)
         {
-            if (id != supplier.SupplierId)
+            var existingSupplier = await _context.Suppliers.FindAsync(id);
+
+            if (existingSupplier ==null)
             {
                 throw new ArgumentException("Id mismatch");
             }
 
-            _context.Entry(supplier).State = EntityState.Modified;
+            existingSupplier.SupplierName = supplier.SupplierName;
+            existingSupplier.ContactInformation = supplier.ContactInformation;
+
+            _context.Entry(existingSupplier).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +65,7 @@ namespace inventory_api.Services.SupplierService
                 }
             }
 
-            return supplier;
+            return existingSupplier;
         }
 
         public async Task DeleteSupplier(int id)

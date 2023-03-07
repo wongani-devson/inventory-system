@@ -2,13 +2,12 @@
   <q-page>
     <div>Register page</div>
     <div class="q-pa-md">
-      <q-form @submit="onSubmit" @reset="onReset" class="row col-12">
+      <q-form @submit="onSubmit" class="row col-12">
         <div class="col-6 q-pa-sm">
           <q-input
             filled
             v-model="user_register.FirstName"
-            label="Your name *"
-            hint="Name and surname"
+            label="First name"
             lazy-rules
             :rules="[
               (val) => (val && val.length > 0) || 'Please type something',
@@ -19,8 +18,7 @@
           <q-input
             filled
             v-model="user_register.LastName"
-            label="Your name *"
-            hint="Name and surname"
+            label="Last name"
             lazy-rules
             :rules="[
               (val) => (val && val.length > 0) || 'Please type something',
@@ -31,8 +29,7 @@
           <q-input
             filled
             v-model="user_register.UserName"
-            label="Your name *"
-            hint="Name and surname"
+            label="Username"
             lazy-rules
             :rules="[
               (val) => (val && val.length > 0) || 'Please type something',
@@ -43,8 +40,7 @@
           <q-input
             filled
             v-model="user_register.Email"
-            label="Your name *"
-            hint="Name and surname"
+            label="Email"
             lazy-rules
             :rules="[
               (val) => (val && val.length > 0) || 'Please type something',
@@ -53,22 +49,30 @@
         </div>
         <div class="col-6 q-pa-sm">
           <q-input
+            dense
             filled
+            ref="password"
+            placeholder="Create Password"
+            input-class="text-center text-white"
+            class="col-12 input q-my-sm"
+            :type="isPwd ? 'password' : 'text'"
             v-model="user_register.Password"
-            label="Your name *"
-            hint="Name and surname"
-            lazy-rules
-            :rules="[
-              (val) => (val && val.length > 0) || 'Please type something',
-            ]"
-          />
+          >
+            <template #append>
+              <q-icon
+                :name="isPwd ? 'visibility_off' : 'visibility'"
+                color="white"
+                class="cursor-pointer"
+                @click="isPwd = !isPwd"
+              />
+            </template>
+          </q-input>
         </div>
         <div class="col-6 q-pa-sm">
           <q-input
             filled
-            v-model="name"
-            label="Your name *"
-            hint="Name and surname"
+            v-model="user_register.PhoneNumber"
+            label="Phone number"
             lazy-rules
             :rules="[
               (val) => (val && val.length > 0) || 'Please type something',
@@ -95,6 +99,7 @@ export default {
   name: "RegisterPage",
   data() {
     return {
+      isPwd: true,
       user_register: {
         UserName: null,
         Email: null,
@@ -104,6 +109,16 @@ export default {
         Password: null,
       },
     };
+  },
+  methods: {
+    async onSubmit() {
+      try {
+        await this.$axios.post(
+          `https://localhost:7221/api/Auth/register`,
+          this.user_register
+        );
+      } catch (error) {}
+    },
   },
 };
 </script>

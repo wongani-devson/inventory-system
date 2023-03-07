@@ -35,12 +35,17 @@ namespace inventory_api.Services.CustomerService
 
         public async Task<Customer> UpdateCustomer(int id, Customer customer)
         {
-            if (id != customer.CustomerId)
+            var existingCustomer = await _context.Customers.FindAsync(id);
+
+            if (existingCustomer == null)
             {
                 throw new ArgumentException("Id mismatch");
             }
+            existingCustomer.CustomerName = customer.CustomerName;
+            existingCustomer.ContactInformation = customer.ContactInformation;
+            existingCustomer.TotalSpend = customer.TotalSpend;
 
-            _context.Entry(customer).State = EntityState.Modified;
+            _context.Entry(existingCustomer).State = EntityState.Modified;
 
             try
             {
@@ -58,7 +63,7 @@ namespace inventory_api.Services.CustomerService
                 }
             }
 
-            return customer;
+            return existingCustomer;
         }
 
         public async Task DeleteCustomer(int id)

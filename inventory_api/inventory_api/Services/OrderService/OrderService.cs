@@ -17,7 +17,25 @@ namespace inventory_api.Services.OrderService
 
         public async Task<IEnumerable<Order>> GetOrders()
         {
-            return await _context.Orders.Include(p => p.Customer).ToListAsync();
+            //return await _context.Orders.Include(p => p.Customer).ToListAsync();
+            var Orders = await (
+
+                from o in _context.Orders
+                join c in _context.Customers on o.CustomerId equals c.CustomerId
+                join od in _context.OrderDetails on o.OrderDetailsId equals od.OrderDetailsId
+
+                select new Order
+                {
+                    OrderId = o.OrderId,
+                    OrderDate = o.OrderDate,
+                    TotalCost = o.TotalCost,
+                    CustomerId = o.CustomerId,
+                    Customer = o.Customer,
+                    OrderDetailsId = od.OrderDetailsId,
+                    OrderDetails = o.OrderDetails,
+                }).ToListAsync();
+
+            return Orders;
         }
 
         public async Task<Order> GetOrder(int id)
@@ -35,12 +53,19 @@ namespace inventory_api.Services.OrderService
 
         public async Task<Order> UpdateOrder(int id, Order Order)
         {
-            if (id != Order.OrderId)
+            var existingOrder = await _context.Orders.FindAsync(id);
+
+            if (existingOrder == null)
             {
                 throw new ArgumentException("Id mismatch");
             }
 
-            _context.Entry(Order).State = EntityState.Modified;
+            existingOrder.OrderDate = Order.OrderDate;
+            existingOrder.TotalCost = Order.TotalCost;
+            existingOrder.CustomerId = Order.CustomerId;
+            existingOrder.OrderDetailsId = Order.OrderDetailsId;
+
+            _context.Entry(existingOrder).State = EntityState.Modified;
 
             try
             {
@@ -58,7 +83,7 @@ namespace inventory_api.Services.OrderService
                 }
             }
 
-            return Order;
+            return existingOrder;
         }
 
         public async Task DeleteOrder(int id)

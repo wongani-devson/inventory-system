@@ -1,7 +1,6 @@
 ﻿using inventory_api.Data;
 using inventory_api.Models;
 
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 using System.Runtime.Serialization;
@@ -19,8 +18,26 @@ namespace inventory_api.Services.ProductService
 
         public async Task<IEnumerable<Product>> GetProducts()
         {
-            return await _context.Products.Include(p => p.Category)
-                .Include(p => p.Supplier).ToListAsync();
+            var products = await (
+
+                from p in _context.Products
+                join s in _context.Suppliers on p.SupplierId equals s.SupplierId
+                join c in _context.Categories on p.CategoryId equals c.CategoryId
+                select new Product
+                {
+                    ProductId = p.ProductId,
+                    ProductName = p.ProductName,
+                    ProductDescription = p.ProductDescription,
+                    UnitPrice = p.UnitPrice,
+                    SupplierId = p.SupplierId,
+                    StockQuantity = p.StockQuantity,
+                    CategoryId = p.CategoryId,
+                    Supplier = s,
+                    Category = c
+                }).ToListAsync();
+
+
+            return products;
         }
 
         public async Task<Product> GetProduct(int id)
@@ -38,12 +55,21 @@ namespace inventory_api.Services.ProductService
 
         public async Task<Product> UpdateProduct(int id, Product product)
         {
-            if (id != product.ProductId)
+            var existingProduct = await _context.Products.FindAsync(id);
+
+            if (existingProduct == null)
             {
                 throw new ArgumentException("Id mismatch");
             }
+            
+            existingProduct.ProductName = product.ProductName;
+            existingProduct.ProductDescription = product.ProductDescription;
+            existingProduct.UnitPrice = product.UnitPrice;
+            existingProduct.StockQuantity = product.StockQuantity;
+            existingProduct.CategoryId = product.CategoryId;
+            existingProduct.SupplierId = product.SupplierId;
 
-            _context.Entry(product).State = EntityState.Modified;
+            _context.Entry(existingProduct).State = EntityState.Modified;
 
             try
             {
@@ -61,7 +87,7 @@ namespace inventory_api.Services.ProductService
                 }
             }
 
-            return product;
+            return existingProduct;
         }
 
         public async Task DeleteProduct(int id)
